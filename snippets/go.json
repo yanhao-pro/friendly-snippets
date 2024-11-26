@@ -287,5 +287,176 @@
     "if key in a map": {
         "prefix": "om",
         "body": "if ${1:value}, ok := ${2:map}[${3:key}]; ok {\n\t$4\n}"
+    },
+
+    "if err != nil wrap": {
+        "prefix": "errwr",
+        "body": "if err != nil {\n\treturn fmt.Errorf(\"${1} %w\", err)\n}",
+        "description": "Snippet for wraps if err != nil"
+    },
+    "if err != nil panic": {
+        "prefix": "errp",
+        "body": "if err != nil {\n\tpanic(err)\n}",
+        "description": "Snippet for panic if err != nil"
+    },
+    "if err != nil log.Fatalf": {
+        "prefix": "errlf",
+        "body": "if err != nil {\n\tlog.Fatalf(\"${1} %s\", err)\n}",
+        "description": "Snippet for exit if err != nil"
+    },
+    "new error struct": {
+        "prefix": "errst",
+        "body": "type ${1}Error struct {\n\t${2}\n}\n\nfunc (e *Error) Error() string {\n\treturn \"\"\n}",
+        "description": "Snippet for new error struct"
+    },
+    "new error variable": {
+        "prefix": "errvar",
+        "body": "var Err${1} = errors.New(\"${2}\")",
+        "description": "Snippet for new error variable"
+    },
+    "check errors.As": {
+        "prefix": "erras",
+        "body": "var e *${1}Error\nif errors.As(err, &e) {\n\t${2}\n}",
+        "description": "Snippet for check errors.As"
+    },
+    "check errors.Is": {
+        "prefix": "erris",
+        "body": "if errors.Is(err, Err${1}) {\n\t// err, or some error that it wraps, is a permission problem\n\t${2}\n}",
+        "description": "Snippet for check errors.Is"
+    },
+    "json Marshal and print": {
+        "prefix": "jp",
+        "body": "func (name string){\n\t// DEBUG: remove before commit\n\t_, file, line, _ := runtime.Caller(0)\n\tjb, _ := json.MarshalIndent(${1}, \"\", \"\t\")\n\tfmt.Printf(\"\n[%s:%d - %s]\n%s\n\n\", file, line, name, string(jb))\n\t_ = ioutil.WriteFile(name + \".json\", jb, 0644)\n}(\"${2}\")",
+        "description": "Snippet for json Marshal and print"
+    },
+    "print debug info": {
+        "prefix": "dp",
+        "body": "func (){\n\t// DEBUG: remove before commit\n\t_, file, line, _ := runtime.Caller(0)\n\theader := fmt.Sprintf(\">>>>>> [%s:%d]\", file, line)\n\tfmt.Println(header, ${1})\n}()",
+        "description": "Snippet for print debug info"
+    },
+    "json Marshal and print": {
+        "prefix": "jp",
+        "body": "func (name string){\n\t// DEBUG: remove before commit\n\t_, file, line, _ := runtime.Caller(0)\n\tjb, _ := json.MarshalIndent(${1}, \"\", \"  \")\n\tfmt.Printf(\"\\n[%s:%d - %s]\\n%s\\n\\n\", file, line, name, string(jb))\n\t_ = ioutil.WriteFile(name + \".json\", jb, 0644)\n}(\"${2}\")",
+        "description": "Snippet for json Marshal and print"
+    },
+    "json load from file": {
+        "prefix": "jsonLoad",
+        "body": "func (){\n\tdoc, err := ioutil.ReadFile(\"${1}\")\n\tif err != nil {\n\t\tlog.Fatal(err)\n\t}\n\n\terr = json.Unmarshal(doc, ${2})\n\tif err != nil {\n\t\tlog.Fatal(err)\n\t}\n}()",
+        "description": "Snippet for json load from file"
+    },
+    "dump http request": {
+        "prefix": "httpDumpRequest",
+        "body": "func(req *http.Request) {\n\t// DEBUG: remove before commit\n\tdump, err := httputil.DumpRequestOut(req, true)\n\tif err != nil {\n\t\tlog.Fatal(err)\n\t}\n\n\tfmt.Printf(\"%s\", dump)\n}(${1})",
+        "description": "Snippet for dump http request"
+    },
+    "dump http response": {
+        "prefix": "httpDumpResponse",
+        "body": "func(res *http.Response) {\n\t// DEBUG: remove before commit\n\tdump, err := httputil.DumpResponse(res, true)\n\tif err != nil {\n\t\tlog.Fatal(err)\n\t}\n\n\tfmt.Printf(\"%s\", dump)\n}(${1})",
+        "description": "Snippet for dump http response"
+    },
+    "http test server": {
+        "prefix": "httpTestSvr",
+        "body": "s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {\n\tif r.URL.String() == \"\" {\n\t\tw.WriteHeader(200)\n\t\treturn\n\t}\n\tif r.URL.String() == \"\" {\n\t\tfmt.Fprintf(w, \"{}\")\n\t\treturn\n\t}\n\tw.WriteHeader(404)\n}))\ndefer s.Close()",
+        "description": "Snippet for http test server"
+    },
+    "basic flags": {
+        "prefix": "flags",
+        "body": "var output string\nvar option converter.Option\n\nflag.StringVar(&output, \"output\", \"\", \"the path of the output file\")\nflag.IntVar(&option.MinUsers, \"min-users\", 0, \"minimal number of participants\")\n\nflag.Parse()\n\nif output == \"\" {\n\tflag.PrintDefaults()\n\treturn\n}",
+        "description": "Snippet for basic flags"
+    },
+    "basic flags": {
+        "prefix": "createFile",
+        "body": "f, err := os.Create(\"/tmp/dat2\")\nif err != nil {\n\tlog.Fatalf(\"Failed to create file: %s\", err)\n}\n\ndefer f.Close()\n\nd2 := []byte{115, 111, 109, 101, 10}\n_, err = f.Write(d2)\nif err != nil {\n\tlog.Fatalf(\"Failed to write file: %s\", err)\n}",
+        "description": "Snippet for basic flags"
+    },
+    "import testify": {
+        "prefix": "testify",
+        "body": "\"github.com/stretchr/testify/assert\"\n\"github.com/stretchr/testify/require\"",
+        "description": "Snippet for import testify"
+    },
+    "basic http server": {
+        "prefix": "httpServer",
+        "body": "http.HandleFunc(\"/hello\", func (w http.ResponseWriter, req *http.Request) {\n\tfmt.Fprintf(w, \"hello\\n\")\n})\nhttp.ListenAndServe(\":8090\", nil)",
+        "description": "Snippet for basic http server"
+    },
+    "http server with graceful shutdown": {
+        "prefix": "httpServerShutdown",
+        "body": "type apiHandler struct{}\nfunc (apiHandler) ServeHTTP(http.ResponseWriter, *http.Request) {}\n\nfunc main() {\n\tmux := http.NewServeMux()\n\tmux.Handle(\"/api/\", apiHandler{})\n\tmux.HandleFunc(\"/\", func(w http.ResponseWriter, req *http.Request) {\n\t\t// The \"/\" pattern matches everything, so we need to check\n\t\t// that we're at the root here.\n\t\tif req.URL.Path != \"/\" {\n\t\t\thttp.NotFound(w, req)\n\t\t\treturn\n\t\t}\n\t\tw.WriteHeader(200)\n\t\tfmt.Fprintf(w, \"Welcome to the home page!\")\n\t})\n\n\tsrv := &http.Server{\n\t\tAddr:    \":8080\",\n\t\tHandler: mux,\n\t}\n\n\tdone := make(chan os.Signal, 1)\n\tsignal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)\n\n\tgo func() {\n\t\tif err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {\n\t\t\tlog.Fatalf(\"listen: %s\\n\", err)\n\t\t}\n\t}()\n\tlog.Print(\"Server Started\")\n\n\t<-done\n\tlog.Print(\"Server Stopped\")\n\n\tctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)\n\tdefer func() {\n\t\t// extra handling here\n\t\tcancel()\n\t}()\n\n\tif err := srv.Shutdown(ctx); err != nil {\n\t\tlog.Fatalf(\"Server Shutdown Failed:%+v\", err)\n\t}\n\tlog.Print(\"Server Exited Properly\")\n}",
+        "description": "Snippet for http server with graceful shutdown"
+    },
+    "basic http client": {
+        "prefix": "httpClient",
+        "body": "var httpClient = &http.Client{\n\tTimeout: time.Second * 10,\n}\n\nresponse, _ := httpClient.Get(url)",
+        "description": "Snippet for basic http client"
+    },
+    "basic http client": {
+        "prefix": "httpClientTrans",
+        "body": "var netTransport = &http.Transport{\n\tDial: (&net.Dialer{\n\t\tTimeout: 5 * time.Second,\n\t}).Dial,\n\tTLSHandshakeTimeout: 5 * time.Second,\n}\n\nvar httpClient = &http.Client{\n\tTimeout: time.Second * 10,\n\tTransport: netTransport,\n}\n\nresponse, _ := httpClient.Get(url)",
+        "description": "Snippet for basic http client"
+    },
+    "skip the test": {
+        "prefix": "testSkip",
+        "body": "fooAddr := os.Getenv(\"FOO_ADDR\")\nif fooAddr == \"\" {\n\tt.Skip(\"set FOO_ADDR to run this test\")\n}",
+        "description": "Snippet for skip the test"
+    },
+    "select ctx.Done()": {
+        "prefix": "ctxDone",
+        "body": "select {\ncase <-ctx.Done():\n\treturn ctx.Err()\ncase out <- v:\ndefault:\n\t// non-blocking\n}",
+        "description": "Snippet for select ctx.Done()"
+    },
+    "respondWithJSON": {
+        "prefix": "respondWithJSON",
+        "body": "func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) error {\n\t\tresponse, err := json.Marshal(payload)\n\t\tif err != nil {\n\t\t\t\treturn err\n\t\t}\n\t\tw.Header().Set(\"Content-Type\", \"application/json\")\n\t\tw.Header().Set(\"Access-Control-Allow-Origin\", \"*\")\n\t\tw.WriteHeader(code)\n\t\tw.Write(response)\n\t\treturn nil\n}",
+        "description": "Snippet for respondWithJSON"
+    },
+    "handle JSON request": {
+        "prefix": "handleJSONRequest",
+        "body": "func handler(w http.ResponseWriter, r *http.Request) {\n\t\tdefer r.Body.Close()\n\n\t\tdat, err := io.ReadAll(r.Body)\n\t\tif err != nil {\n\t\t\t\trespondWithError(w, 500, \"couldn't read request\")\n\t\t\t\treturn\n\t\t}\n\t\tparams := requestBody{}\n\t\terr = json.Unmarshal(dat, &params)\n\t\tif err != nil {\n\t\t\t\trespondWithError(w, 500, \"couldn't unmarshal parameters\")\n\t\t\t\treturn\n\t\t}\n}",
+        "description": "Snippet for handle JSON request"
+    },
+    "create a date": {
+        "prefix": "timeDate",
+        "body": "${1:date} := time.Date(${2:year}, ${3:month}, ${4:day}, 0, 0, 0, 0, time.UTC)\n${0}",
+        "description": "Snippet for create a date"
+    },
+    "parse time as RFC1123": {
+        "prefix": "timeParseRFC1123",
+        "body": "${1:t}, err := time.Parse(\"Mon, 02 Jan 2006 15:04:05 MST\", ${2:str})\n${0}",
+        "description": "Snippet for parse time as RFC1123"
+    },
+    "parse time as RFC3339": {
+        "prefix": "timeParseRFC3339",
+        "body": "${1:t}, err := time.Parse(\"2006-01-02T15:04:05Z07:00\", ${2:str})\n${0}",
+        "description": "Snippet for parse time as RFC3339"
+    },
+    "format time as RFC1123": {
+        "prefix": "timeFormatRFC1123",
+        "body": "${1:str} := ${2:time}.Format(\"Mon, 02 Jan 2006 15:04:05 MST\")\n${0}",
+        "description": "Snippet for format time as RFC1123"
+    },
+    "format time as RFC3339": {
+        "prefix": "timeFormatRFC3339",
+        "body": "${1:str} := ${2:time}.Format(\"2006-01-02T15:04:05Z07:00\")\n${0}",
+        "description": "Snippet for format time as RFC3339"
+    },
+    "convert time between different timezones": {
+        "prefix": "timeZone",
+        "body": "loc, _ := time.LoadLocation(\"UTC\")\nloc, _ = time.LoadLocation(\"Europe/Berlin\")\nloc, _ = time.LoadLocation(\"America/New_York\")\n${1:t} := ${2:time}.In(loc))\n${0}",
+        "description": "Snippet for convert time between different timezones"
+    },
+    "basic table driven tests": {
+        "prefix": "testTable",
+        "body": "tests := map[string]struct {\n\tinput string\n\twant  []string\n}{\n\t\"simple\": {input: \"\", want: []string{}},\n}\n\nfor name, tc := range tests {\n\tt.Run(name, func(t *testing.T) {\n\t\tgot := Split(tc.input, tc.sep)\n\t})\n}",
+        "description": "Snippet for basic table driven tests"
+    },
+    "handle signals": {
+        "prefix": "signals",
+        "body": "sigs := make(chan os.Signal, 1)\ndone := make(chan bool, 1)\n\nsignal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)\n\ngo func() {\n\tsig := <-sigs\n\tfmt.Println(sig)\n\tdone <- true\n}()\n\nfmt.Println(\"awaiting signal\")\n<-done\nfmt.Println(\"exiting\")",
+        "description": "Snippet for handle signals"
+    },
+    "check if a file exists": {
+        "prefix": "fileExists",
+        "body": "if _, err := os.Stat(\"${1}\"); err == nil {\n\t// path/to/whatever exists\n} else if errors.Is(err, os.ErrNotExist) {\n\t// path/to/whatever does *not* exist\n} else {\n\t// other errors\n}\n",
+        "description": "Snippet for check if a file exists"
     }
 }
